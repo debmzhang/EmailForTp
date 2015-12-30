@@ -1,19 +1,49 @@
-ThinkPHP 整合 PHPMailer, 使发邮件更方便
+#### ThinkPHP 整合 PHPMailer, 使发邮件更方便
 
-步骤: 
-    1. 先下载PHPMailer https://github.com/PHPMailer/PHPMailer
-    2. 把下载到的整个文件夹复制到项目的 wwwroot/ThinkPHP/Library/Vendor 目录下
-    3. 注意 wwwroot/ThinkPHP/Library/Vendor/PHPMailer 这个文件夹下应该是所有的文件, 而不是 PHPMailer 文件夹
-    4. 在 wwwroot/ThinkPHP/Library/ 目录下创建 Custom 目录, 代表自定义的类库
-    5. 在 wwwroot/ThinkPHP/Library/Custom/ 此目录下 创建 Email 目录, 把 Email.class.php 文件, 复制至此目录下
-    6. 在 wwwroot/Application/Common/Conf/config.php 文件里, 添加一行, 'LOAD_EXT_CONFIG' => 'email', 具体实现, 可参见官方说明 http://doc.thinkphp.cn/manual/extend_config.html
-    7. 把 email.php 文件复制至 wwwroot/Application/Common/Conf 此目录下, 是为 email 的配置文件, 相关配置都可在这里进行修改
-    8. 使用方法 $mail = new \Custom\Email\Email;
-                $mail->send();
-    9. 注意, 执行过第7步后, 需把 wwwroot/Runtime 下的 common~runtime.php 文件删除, 然后再刷新, 否则的话, 由于缓存原因, 载入扩展会失败
+* 步骤:
 
-作者联系方式
-    QQ: 790820730
-    Email: debmzhang@gmail.com
+    1. 使用下载的 ThinkPHP 文件夹覆盖你项目的 ThinkPHP 文件夹
+    
+    	> 注意: 文件夹下有两个文件
+    	
+    	> 文件一是[PHPMailer](https://github.com/PHPMailer/PHPMailer)源文件(方便使用, 直接集成进来了), 路径是 ThinkPHP/Library/Vendor/PHPMailer
+    	
+    	> 文件二是自定义的扩展文件, 文件路径是 ThinkPHP/Library/Org/Util/Email.class.php
+    	
+    	> 如果与你当前文件有冲突, 请谨慎操作
+    
+    2. 把 email.php 文件复制至 /your/path/YourAppName/Common/Conf 此目录下, 是 email 的配置文件, 相关配置都可在这个文件中进行修改
+    	
+    3. 在 /your/path/YourAppName/Common/Conf/config.php 文件里, 添加如下一行
+    
+    	```php
+    	<?php
+    	'LOAD_EXT_CONFIG' => 'email',
+    	```
+    	> 参见 [TP官方说明](http://doc.thinkphp.cn/manual/extend_config.html)
+    	
+    
+    4. 使用方法
+    
+    	```php
+    	<?php
+		namespace Home\Controller;
 
-使用中若有需要, 可直接发邮件或QQ联系.
+		use Think\Controller;
+		use Org\Util\Email;
+
+		class IndexController extends Controller {
+    		public function index(){
+        		$mail = new Email;
+        		// 设置抄送的邮箱集合
+        		$cc = array(
+            		'debmzhang@163.com',
+        		);
+        		$sendResult = $mail->send('790820730@qq.com', 'test title', 'test content', $cc);
+        		// 结果为 true 则表示发送邮件成功
+        		var_dump($sendResult);
+    		}
+		}
+    	```
+
+> 使用中有问题可联系QQ: 790820730
